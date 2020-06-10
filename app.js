@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ScoreDisplay = document.querySelector('#score');
     const startBtn = document.querySelector('#start-button');
     let nextRandom = 0;
+    let timerId;
 
     const lTetromino = [
         [1, width + 1, width * 2 + 1, 2],
@@ -43,38 +44,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino];
 
-    let currentPosition = 4;
-    let currentRotation = 0;
+    let currentPosition = 4; // vị trí khi xuất tetromino 4/10
+    let currentRotation = 0; // vị trí xoay tetromino, tổng 4 hình thái xoay
 
     let random = Math.floor(Math.random() * theTetrominoes.length);
+    let current = theTetrominoes[random][currentRotation]; // lấy ra tetromino bất kỳ trong Array theTetrominoes với kiểu hình dạng mặc định 0
 
-    //console.log(random)
-    //console.log(Math.random())
-
-    let current = theTetrominoes[random][currentRotation];
-
-    //console.log(theTetrominoes[0][0]);
     function draw() {
-        current.forEach(index => {
-            squares[currentPosition + index].classList.add('tetromino')
-                //console.log(current+index)
-                //console.log(index)
-                //console.log(currentPosition + index)
-                //console.log(squares[currentPosition + index])
-        })
+        current.forEach(index => squares[currentPosition + index].classList.add('tetromino'))
+            // currentPosition + index: vị trí mà tetromino được xuất ra
+            // trong Array squares (200 div), tại vị trí mà tetromino được xuất ra, ta add class='tetromino' vào nó
     }
 
     function undraw() {
         current.forEach(index => squares[currentPosition + index].classList.remove('tetromino'))
     }
 
-    //timerId = setInterval(moveDown, 500);
-
     function control(e) {
         if (e.keyCode === 37) moveLeft();
         else if (e.keyCode === 38) rorate();
         else if (e.keyCode === 39) moveRight();
         else if (e.keyCode === 40) moveDown();
+        // tham khảo keyCode trên https://keycode.info/
     }
     document.addEventListener('keyup', control);
 
@@ -83,11 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPosition += width;
         draw();
         freeze();
-
     }
 
     function freeze() {
-        if (current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
+        if (current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) { // kiểm tra xem tại dòng tiếp theo của tetromino có thuộc lớp taken ?
             current.forEach(index => squares[currentPosition + index].classList.add('taken'));
             random = nextRandom;
             nextRandom = Math.floor(Math.random() * theTetrominoes.length);
@@ -138,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         [1, displayWidth + 1, displayWidth * 2 + 1, displayWidth * 3 + 1],
     ]
 
-    let timerId
+
 
     function displayShape() {
         displaySquares.forEach(square => {
