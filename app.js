@@ -3,10 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.grid');
     let squares = Array.from(document.querySelectorAll('.grid div'));
     const scoreDisplay = document.querySelector('#score');
+    const endGame = document.querySelector('#endGame');
     const startBtn = document.querySelector('#start-button');
     let nextRandom = 0;
     let timerId;
     let score = 0;
+    const colors = ['#f67575', '#a8d3da', '#116979', '#ffa372', '#fff591']
 
     const lTetromino = [
         [1, width + 1, width * 2 + 1, 2],
@@ -52,13 +54,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let current = theTetrominoes[random][currentRotation]; // lấy ra tetromino bất kỳ trong Array theTetrominoes với kiểu hình dạng mặc định 0
 
     function draw() {
-        current.forEach(index => squares[currentPosition + index].classList.add('tetromino'))
+        current.forEach(index => {
+                squares[currentPosition + index].classList.add('tetromino')
+                squares[currentPosition + index].style.backgroundColor = colors[random]
+            })
             // currentPosition + index: vị trí mà tetromino được xuất ra
             // trong Array squares (200 div), tại vị trí mà tetromino được xuất ra, ta add class='tetromino' vào nó
     }
 
     function undraw() {
-        current.forEach(index => squares[currentPosition + index].classList.remove('tetromino'))
+        current.forEach(index => {
+            squares[currentPosition + index].classList.remove('tetromino')
+            squares[currentPosition + index].style.backgroundColor = ''
+        })
     }
 
     function control(e) {
@@ -136,9 +144,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayShape() {
         displaySquares.forEach(square => {
             square.classList.remove('tetromino')
+            square.style.backgroundColor = ''
         })
         upNextTetrominoes[nextRandom].forEach(index => {
             displaySquares[displayIndex + index].classList.add('tetromino')
+            displaySquares[displayIndex + index].style.backgroundColor = colors[nextRandom]
         })
     }
 
@@ -175,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function gameOver() {
         if (current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
-            scoreDisplay.innerHTML = 'end'
+            endGame.innerHTML = 'END GAME'
             clearInterval(timerId)
         }
     }
